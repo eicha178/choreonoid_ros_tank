@@ -20,8 +20,10 @@ class ROSTankController : public SimpleController
     double dt;
 
     ros::NodeHandle node;
-    ros::Subscriber twistSubscriber;
-    geometry_msgs::Twist twist;
+    ros::Subscriber trackSubscriber;
+    ros::Subscriber turretSubscriber;
+    geometry_msgs::Twist msg_track;
+    geometry_msgs::Twist msg_turret;
 
     Joystick joystick;
 
@@ -86,33 +88,30 @@ public:
 
     virtual bool start() override
     {
-        twistSubscriber = node.subscribe("cmd_vel", 1, &ROSTankController::twistCallback, this);
+        trackSubscriber = node.subscribe("cmd_vel", 1, &ROSTankController::trackCallback, this);
+        turretSubscriber = node.subscribe("cmd_turret", 1, &ROSTankController::turretCallback, this);
     }
 
     virtual bool control() override
     {
-        joystick.readCurrentState();
-        
         double pos[2];
         for(int i=0; i < 2; ++i){
-            pos[i] = joystick.getPosition(
-                i==0 ? Joystick::L_STICK_H_AXIS : Joystick::L_STICK_V_AXIS);
+            pos[i] = 
+                i==0 ? msg_track.angular.z : msg_track.linear.x;
             if(fabs(pos[i]) < 0.2){
                 pos[i] = 0.0;
             }
         }
+
         // set the velocity of each tracks
         if(usePseudoContinousTrackMode){
             double k = 1.0;
-            //trackL->dq_target() = k * (-2.0 * pos[1] + pos[0]);
-            //trackR->dq_target() = k * (-2.0 * pos[1] - pos[0]);
-
-            trackL->dq_target() = k * (twist.linear.x - twist.angular.z);
-            trackR->dq_target() = k * (twist.linear.x + twist.angular.z);
+            trackL->dq_target() = k * (-pos[1] - pos[0]);
+            trackR->dq_target() = k * (-pos[1] + pos[0]);
         } else {
             double k = 4.0;
-            trackL->dq_target() = k * (-pos[1] + pos[0]);
-            trackR->dq_target() = k * (-pos[1] - pos[0]);
+            trackL->dq_target() = k * (-pos[1] - pos[0]);
+            trackR->dq_target() = k * (-pos[1] + pos[0]);
         }
 
         static const double P = 200.0;
@@ -120,20 +119,21 @@ public:
 
         for(int i=0; i < 2; ++i){
             Link* joint = turretJoint[i];
-            double pos = joystick.getPosition(
-                i==0 ? Joystick::R_STICK_H_AXIS : Joystick::R_STICK_V_AXIS);
+            double pos = 
+                i==0 ? msg_turret.angular.z : msg_turret.angular.y;
+
             if(fabs(pos) < 0.15){
                 pos = 0.0;
             }
 
             if(turretActuationMode == Link::JOINT_VELOCITY){
-                joint->dq_target() = pos;
+                joint->dq_target() = -pos;
 
             } else if(turretActuationMode == Link::JOINT_TORQUE){
                 double q = joint->q();
                 double dq = (q - qprev[i]) / dt;
                 double dqref = 0.0;
-                double deltaq = 0.002 * pos;
+                double deltaq = 0.002 * -pos;
                 qref[i] += deltaq;
                 dqref = deltaq / dt;
                 joint->u() = P * (qref[i] - q) + D * (dqref - dq);
@@ -142,9 +142,14 @@ public:
         }
     }
 
-    void twistCallback(const geometry_msgs::Twist& msg)
+    void trackCallback(const geometry_msgs::Twist& msg)
     {
-        twist = msg;
+        msg_track = msg;
+    }
+
+    void turretCallback(const geometry_msgs::Twist& msg)
+    {
+        msg_turret = msg;
     }
 };
 
