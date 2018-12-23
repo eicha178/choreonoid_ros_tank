@@ -1,0 +1,40 @@
+format: ChoreonoidBody
+formatVersion: 1.0
+angleUnit: degree
+name: FieldWall
+
+APP: &APP
+  material:
+    diffuseColor: [ 0.6, 0.6, 0.6 ]
+    specularColor: [ 0, 0, 0 ]
+    shinines: 0.6
+
+WALL: &WALL_L
+  -
+    type: Shape
+    geometry:
+      type: Box
+      size: [ 0.1, 10, 2 ]
+    appearance: *APP
+
+links:
+  -
+    name: Wall
+    jointType: fixed
+    material: Ground
+    AMOR: true
+    elements:
+      -
+        <<: *WALL_L
+        translation: [ 4.95, 0, 1 ]
+      -
+        <<: *WALL_L
+        translation: [ -4.95, 0, 1 ]
+      -
+        <<: *WALL_L
+        translation: [ 0, 4.95, 1 ]
+        rotation: [ 0, 0, 1, 90 ]
+      -
+        <<: *WALL_L
+        translation: [ 0, -4.95, 1 ]
+        rotation: [ 0, 0, 1, 90 ]

@@ -16,11 +16,48 @@ items:
       children: 
         - 
           id: 2
-          name: "Floor"
+          name: "Tank"
           plugin: Body
           class: BodyItem
           data: 
-            modelFile: "/home/ubuntu/catkin_ws_choreonoid/src/choreonoid/share/model/misc/floor.body"
+            modelFile: "/home/ubuntu/catkin_ws_choreonoid/src/choreonoid/share/model/Tank/Tank.body"
+            currentBaseLink: "CHASSIS"
+            rootPosition: [ 7.29120179e-06, -1.86312427e-08, 0.0998230677 ]
+            rootAttitude: [ 
+              0.99999991, 2.25277534e-07, 0.000423452446, 
+              -2.24881367e-07, 1, -9.35612317e-07, 
+              -0.000423452446, 9.35517007e-07, 0.99999991 ]
+            jointPositions: [  0.000000,  0.019716 ]
+            initialRootPosition: [ 7.29120179e-06, -1.86312427e-08, 0.0998230677 ]
+            initialRootAttitude: [ 
+              0.99999991, 2.25277534e-07, 0.000423452446, 
+              -2.24881367e-07, 1, -9.35612317e-07, 
+              -0.000423452446, 9.35517007e-07, 0.99999991 ]
+            initialJointPositions: [  0.000000,  0.019716 ]
+            zmp: [ 0, 0, 0 ]
+            collisionDetection: true
+            selfCollisionDetection: true
+            isEditable: true
+          children: 
+            - 
+              id: 3
+              name: "SimpleController"
+              plugin: Body
+              class: SimpleControllerItem
+              data: 
+                isNoDelayMode: false
+                controllerOptions: ""
+                controller: "ROSTankController.so"
+                baseDirectory: "Controller directory"
+                reloading: true
+                isOldTargetVariableMode: false
+        - 
+          id: 4
+          name: "Field"
+          plugin: Body
+          class: BodyItem
+          data: 
+            modelFile: "/home/ubuntu/catkin_ws_choreonoid/src/choreonoid_ros_tank/model/field.body"
             currentBaseLink: "Floor"
             rootPosition: [ 0, 0, -0.1 ]
             rootAttitude: [ 
@@ -38,7 +75,30 @@ items:
             selfCollisionDetection: false
             isEditable: false
         - 
-          id: 3
+          id: 5
+          name: "FieldWall"
+          plugin: Body
+          class: BodyItem
+          data: 
+            modelFile: "/home/ubuntu/catkin_ws_choreonoid/src/choreonoid_ros_tank/model/field_wall.body"
+            currentBaseLink: "Wall"
+            rootPosition: [ 0, 0, 0 ]
+            rootAttitude: [ 
+              1, 0, 0, 
+              0, 1, 0, 
+              0, 0, 1 ]
+            jointPositions: [  ]
+            initialRootPosition: [ 0, 0, 0 ]
+            initialRootAttitude: [ 
+              1, 0, 0, 
+              0, 1, 0, 
+              0, 0, 1 ]
+            zmp: [ 0, 0, 0 ]
+            collisionDetection: true
+            selfCollisionDetection: false
+            isEditable: false
+        - 
+          id: 6
           name: "AISTSimulator"
           plugin: Body
           class: AISTSimulatorItem
@@ -67,43 +127,6 @@ items:
             kinematicWalking: false
             2Dmode: false
             oldAccelSensorMode: false
-        - 
-          id: 4
-          name: "Tank"
-          plugin: Body
-          class: BodyItem
-          data: 
-            modelFile: "/home/ubuntu/catkin_ws_choreonoid/src/choreonoid/share/model/Tank/Tank.body"
-            currentBaseLink: "CHASSIS"
-            rootPosition: [ 3.28716595e-05, -7.16902438e-09, 0.0941089113 ]
-            rootAttitude: [ 
-              0.999999939, 1.51029036e-07, 0.000350362503, 
-              -1.50824483e-07, 1, -5.83860048e-07, 
-              -0.000350362503, 5.83807169e-07, 0.999999939 ]
-            jointPositions: [  0.000000,  0.029597 ]
-            initialRootPosition: [ 3.28716595e-05, -7.16902438e-09, 0.0941089113 ]
-            initialRootAttitude: [ 
-              0.999999939, 1.51029036e-07, 0.000350362503, 
-              -1.50824483e-07, 1, -5.83860048e-07, 
-              -0.000350362503, 5.83807169e-07, 0.999999939 ]
-            initialJointPositions: [  0.000000,  0.029597 ]
-            zmp: [ 0, 0, 0 ]
-            collisionDetection: true
-            selfCollisionDetection: true
-            isEditable: true
-          children: 
-            - 
-              id: 5
-              name: "SimpleController"
-              plugin: Body
-              class: SimpleControllerItem
-              data: 
-                isNoDelayMode: false
-                controllerOptions: ""
-                controller: "ROSTankController.so"
-                baseDirectory: "Controller directory"
-                reloading: true
-                isOldTargetVariableMode: false
 views: 
   - 
     id: 0
@@ -116,9 +139,9 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 4 ]
-      checked: [ 4 ]
-      expanded: [ 1, 4, 5 ]
+      selected: [ 4, 6 ]
+      checked: [ 2, 4, 5 ]
+      expanded: [ 1, 2, 3 ]
   - 
     id: 2
     plugin: Base
@@ -136,14 +159,14 @@ views:
       polygonMode: fill
       cullingMode: enabled
       defaultHeadLight: true
-      defaultHeadLightIntensity: 0.75
+      defaultHeadLightIntensity: 0.5
       headLightLightingFromBack: false
       worldLight: true
       worldLightIntensity: 0.5
       worldLightAmbient: 0.3
-      additionalLights: true
+      additionalLights: false
       fog: true
-      floorGrid: true
+      floorGrid: false
       floorGridSpan: 10
       floorGridInterval: 0.5
       xzGridSpan: 10
@@ -165,16 +188,16 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
-          isCurrent: true
           fieldOfView: 0.698132
           near: 0.04
           far: 200
-          eye: [ 0.411672636, 1.39485171, 0.467479365 ]
-          direction: [ -0.212983606, -0.965353932, -0.150763953 ]
-          up: [ -0.032481521, -0.147223369, 0.98856979 ]
+          eye: [ 0.0592006888, 0.250117892, 17.6123348 ]
+          direction: [ -0.00054464948, 2.35072254e-06, -0.999999852 ]
+          up: [ 0.999990538, -0.00431598741, -0.000544654553 ]
         - 
           camera: [ System, Orthographic ]
-          orthoHeight: 20
+          isCurrent: true
+          orthoHeight: 11.2775
           near: 0.04
           far: 200
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
@@ -184,18 +207,79 @@ views:
       dedicatedItemTreeViewChecks: false
   - 
     id: 4
+    name: "シーン 2"
+    plugin: Base
+    class: SceneView
+    mounted: true
+    state: 
+      editMode: false
+      viewpointControlMode: thirdPerson
+      collisionLines: false
+      polygonMode: fill
+      cullingMode: enabled
+      defaultHeadLight: true
+      defaultHeadLightIntensity: 0.75
+      headLightLightingFromBack: false
+      worldLight: true
+      worldLightIntensity: 0.5
+      worldLightAmbient: 0.3
+      additionalLights: true
+      fog: true
+      floorGrid: false
+      floorGridSpan: 10
+      floorGridInterval: 0.5
+      xzGridSpan: 10
+      xzGridInterval: 0.5
+      xzGrid: false
+      yzGridSpan: 10
+      yzGridInterval: 0.5
+      texture: true
+      lineWidth: 1
+      pointSize: 1
+      normalVisualization: false
+      normalLength: 0.01
+      coordinateAxes: true
+      fpsTestIteration: 1
+      showFPS: false
+      enableNewDisplayListDoubleRendering: false
+      useBufferForPicking: true
+      upsideDown: false
+      cameras: 
+        - 
+          camera: [ System, Perspective ]
+          fieldOfView: 0.698132
+          near: 0.04
+          far: 200
+          eye: [ -3.23331278, 10.6919003, 12.8625611 ]
+          direction: [ 0.27914507, -0.588580369, -0.758716798 ]
+          up: [ 0.32512335, -0.685526066, 0.651420617 ]
+        - 
+          camera: [ System, Orthographic ]
+          orthoHeight: 20
+          near: 0.04
+          far: 200
+        - 
+          camera: [ Tank, Kinect ]
+          isCurrent: true
+      backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
+      gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      dedicatedItemTreeViewChecks: false
+  - 
+    id: 5
     name: "Virtual Joystick"
     plugin: Base
     class: VirtualJoystickView
   - 
-    id: 5
+    id: 6
     plugin: Body
     class: BodyLinkView
     mounted: true
     state: 
       showRotationMatrix: false
   - 
-    id: 6
+    id: 7
     plugin: Body
     class: JointSliderView
     mounted: true
@@ -209,7 +293,7 @@ views:
       labelOnLeft: true
       currentBodyItem: 4
   - 
-    id: 7
+    id: 8
     plugin: Body
     class: LinkSelectionView
     mounted: true
@@ -217,18 +301,18 @@ views:
       listingMode: "Link List"
       currentBodyItem: 4
   - 
-    id: 8
+    id: 9
     plugin: Python
     class: PythonConsoleView
     mounted: true
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 30
+    maxTime: 203.021
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
-    currentTime: 2.451
+    currentTime: 0
     speedScale: 1
     syncToOngoingUpdates: true
     autoExpansion: true
@@ -283,7 +367,17 @@ Body:
   "EditableSceneBody": 
     editableSceneBodies: 
       - 
+        bodyItem: 2
+        showCenterOfMass: false
+        showPpcom: false
+        showZmp: false
+      - 
         bodyItem: 4
+        showCenterOfMass: false
+        showPpcom: false
+        showZmp: false
+      - 
+        bodyItem: 5
         showCenterOfMass: false
         showPpcom: false
         showZmp: false
@@ -309,7 +403,7 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 426, 869 ]
+      sizes: [ 199, 1096 ]
       children: 
         - 
           type: splitter
@@ -322,29 +416,29 @@ viewAreas:
               current: 1
             - 
               type: pane
-              views: [ 0, 7 ]
+              views: [ 0, 8 ]
               current: 0
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 461, 185 ]
+          sizes: [ 539, 107 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 375, 488 ]
+              sizes: [ 578, 512 ]
               children: 
                 - 
                   type: pane
-                  views: [ 5, 6 ]
-                  current: 5
+                  views: [ 6, 7, 4 ]
+                  current: 4
                 - 
                   type: pane
                   views: [ 3 ]
                   current: 3
             - 
               type: pane
-              views: [ 2, 8 ]
+              views: [ 2, 9 ]
               current: 2
 layoutOfToolBars: 
   rows: 
