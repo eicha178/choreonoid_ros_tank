@@ -1,1 +1,2 @@
 add_cnoid_simple_controller(ROSTankController ROSTankController.cpp)
+add_cnoid_simple_controller(RobotController RobotController.cpp)

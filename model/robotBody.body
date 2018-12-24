@@ -1,0 +1,23 @@
+format: ChoreonoidBody
+formatVersion: 1.0
+angleUnit: degree
+name: RobotBody
+
+links:
+  -
+    name: CHASSIS
+    translation: [ 0, 0, 0 ]
+    jointType: free
+    centerOfMass: [ 0, 0, 0 ]
+    mass: 8.0
+    inertia: [
+      0.1, 0,   0,
+      0,   0.1, 0,
+      0,   0,   0.5 ]
+    elements:
+      -
+        type: Shape
+        translation: [ 0.0, 0.0, 0.2 ]
+        geometry:
+          type: Box
+          size: [ 0.4, 0.3, 0.2 ]
