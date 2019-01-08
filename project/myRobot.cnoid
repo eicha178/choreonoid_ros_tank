@@ -138,7 +138,7 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 3 ]
+      selected: [ 2, 4 ]
       checked: [ 2, 5, 6 ]
       expanded: [ 1, 2, 3 ]
   - 
@@ -196,7 +196,7 @@ views:
         - 
           camera: [ System, Orthographic ]
           isCurrent: true
-          orthoHeight: 14.6286
+          orthoHeight: 10.9051
           near: 0.04
           far: 200
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
@@ -246,13 +246,75 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
+          fieldOfView: 0.698132
+          near: 0.04
+          far: 200
+          eye: [ 0.341730359, -1.38871387, 1.47094737 ]
+          direction: [ -0.0363740592, 0.763111202, -0.645242762 ]
+          up: [ -0.0307209247, 0.644511013, 0.763977603 ]
+        - 
+          camera: [ System, Orthographic ]
+          orthoHeight: 20
+          near: 0.04
+          far: 200
+        - 
+          camera: [ Robot, FRAME_FRONT_CAMERA ]
+          isCurrent: true
+      backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
+      gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
+      dedicatedItemTreeViewChecks: true
+      checked: [ 2, 5, 6 ]
+  - 
+    id: 5
+    name: "シーン 3"
+    plugin: Base
+    class: SceneView
+    mounted: true
+    state: 
+      editMode: false
+      viewpointControlMode: thirdPerson
+      collisionLines: false
+      polygonMode: fill
+      cullingMode: enabled
+      defaultHeadLight: true
+      defaultHeadLightIntensity: 0.75
+      headLightLightingFromBack: false
+      worldLight: true
+      worldLightIntensity: 0.5
+      worldLightAmbient: 0.3
+      additionalLights: true
+      fog: true
+      floorGrid: true
+      floorGridSpan: 10
+      floorGridInterval: 0.5
+      xzGridSpan: 10
+      xzGridInterval: 0.5
+      xzGrid: false
+      yzGridSpan: 10
+      yzGridInterval: 0.5
+      texture: true
+      lineWidth: 1
+      pointSize: 1
+      normalVisualization: false
+      normalLength: 0.01
+      coordinateAxes: true
+      fpsTestIteration: 1
+      showFPS: false
+      enableNewDisplayListDoubleRendering: false
+      useBufferForPicking: true
+      upsideDown: false
+      cameras: 
+        - 
+          camera: [ System, Perspective ]
           isCurrent: true
           fieldOfView: 0.698132
           near: 0.04
           far: 200
-          eye: [ 13.0407912, -6.01184429, 12.0634113 ]
-          direction: [ -0.67553855, 0.312409318, -0.667868314 ]
-          up: [ -0.606184661, 0.280335944, 0.74427946 ]
+          eye: [ 4.21779272, -4.01157546, 7.13616453 ]
+          direction: [ -0.40603906, 0.458821316, -0.79032606 ]
+          up: [ -0.523764214, 0.591849922, 0.612686476 ]
         - 
           camera: [ System, Orthographic ]
           orthoHeight: 20
@@ -262,22 +324,21 @@ views:
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
-      dedicatedItemTreeViewChecks: true
-      checked: [ 2, 5 ]
+      dedicatedItemTreeViewChecks: false
   - 
-    id: 5
+    id: 6
     name: "Virtual Joystick"
     plugin: Base
     class: VirtualJoystickView
   - 
-    id: 6
+    id: 7
     plugin: Body
     class: BodyLinkView
     mounted: true
     state: 
       showRotationMatrix: false
   - 
-    id: 7
+    id: 8
     plugin: Body
     class: JointSliderView
     mounted: true
@@ -289,24 +350,24 @@ views:
       spinBox: true
       slider: true
       labelOnLeft: true
-      currentBodyItem: 5
+      currentBodyItem: 2
   - 
-    id: 8
+    id: 9
     plugin: Body
     class: LinkSelectionView
     mounted: true
     state: 
       listingMode: "Link List"
-      currentBodyItem: 5
+      currentBodyItem: 2
   - 
-    id: 9
+    id: 10
     plugin: Python
     class: PythonConsoleView
     mounted: true
 toolbars: 
   "TimeBar": 
     minTime: 0
-    maxTime: 203.021
+    maxTime: 318.779
     frameRate: 1000
     playbackFrameRate: 60
     idleLoopDrivenMode: false
@@ -323,7 +384,7 @@ toolbars:
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
   "BodyBar": 
-    current: 5
+    current: 2
   "LeggedBodyBar": 
     stanceWidth: 0.15
   "BodyMotionGenerationBar": 
@@ -401,7 +462,7 @@ viewAreas:
     contents: 
       type: splitter
       orientation: horizontal
-      sizes: [ 199, 1096 ]
+      sizes: [ 170, 1125 ]
       children: 
         - 
           type: splitter
@@ -414,7 +475,7 @@ viewAreas:
               current: 1
             - 
               type: pane
-              views: [ 0, 8 ]
+              views: [ 0, 9 ]
               current: 0
         - 
           type: splitter
@@ -424,19 +485,28 @@ viewAreas:
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 578, 512 ]
+              sizes: [ 560, 559 ]
               children: 
                 - 
-                  type: pane
-                  views: [ 6, 7, 4 ]
-                  current: 4
+                  type: splitter
+                  orientation: vertical
+                  sizes: [ 320, 320 ]
+                  children: 
+                    - 
+                      type: pane
+                      views: [ 7, 8, 3 ]
+                      current: 3
+                    - 
+                      type: pane
+                      views: [ 5 ]
+                      current: 5
                 - 
                   type: pane
-                  views: [ 3 ]
-                  current: 3
+                  views: [ 4 ]
+                  current: 4
             - 
               type: pane
-              views: [ 2, 9 ]
+              views: [ 2, 10 ]
               current: 2
 layoutOfToolBars: 
   rows: 

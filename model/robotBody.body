@@ -2,6 +2,7 @@ format: ChoreonoidBody
 formatVersion: 1.0
 angleUnit: degree
 name: RobotBody
+rootLink: CHASSIS
 
 links:
   -
@@ -16,8 +17,54 @@ links:
       0,   0,   0.5 ]
     elements:
       -
+        type: Visual
+        elements:
+          - &CHASSIS
+            type: Shape
+            translation: [ 0.0, 0.0, 0.2 ]
+            geometry:
+              type: Box
+              size: [ 0.4, 0.3, 0.2 ]
+      -
+        type: Collision
+        elements:
+          -
+            <<: *CHASSIS
+          -
+            type: AccelerationSensor
+            name: ACCEL_SENSOR
+            id: 0
+          -
+            type: RateGyroSensor
+            name: GYRO
+            id: 0
+  -
+    name: FRAME_FRONT_CAMERA_LINK
+    parent: CHASSIS
+    jointType: fixed
+    elements:
+      -
         type: Shape
-        translation: [ 0.0, 0.0, 0.2 ]
+        translation: [ 0.21, 0, 0.2 ]
+        rotation: [ 0, 0, 1, 90 ]
         geometry:
-          type: Box
-          size: [ 0.4, 0.3, 0.2 ]
+          type: Cylinder
+          radius: 0.025
+          height: 0.02
+      -
+        type: Collision
+        elements:
+          -
+            type: Camera
+            name: FRAME_FRONT_CAMERA
+            id: 0
+            translation: [ 0.2, 0, 0.2 ]
+            rotation: [[ 0, 1, 0, -90 ], [ 0, 0, 1, -90]]
+            format: COLOR
+            on: true
+            width: 640
+            height: 360
+            fieldOfView: 60
+            frameRate: 10
+            farClipDistance: 100
+

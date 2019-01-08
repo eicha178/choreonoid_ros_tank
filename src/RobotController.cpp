@@ -90,12 +90,12 @@ public:
         // set the velocity of each tracks
         if(usePseudoContinousTrackMode){
             double k = 1.0;
-            trackL->dq_target() = k * (-pos[1] - pos[0]/2);
-            trackR->dq_target() = k * (-pos[1] + pos[0]/2);
+            trackL->dq_target() = k * (pos[1] - pos[0]/2);
+            trackR->dq_target() = k * (pos[1] + pos[0]/2);
         } else {
             double k = 4.0;
-            trackL->dq_target() = k * (-pos[1] - pos[0]/2);
-            trackR->dq_target() = k * (-pos[1] + pos[0]/2);
+            trackL->dq_target() = k * (pos[1] - pos[0]/2);
+            trackR->dq_target() = k * (pos[1] + pos[0]/2);
         }
     }
 
