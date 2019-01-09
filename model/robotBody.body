@@ -68,3 +68,84 @@ links:
             frameRate: 10
             farClipDistance: 100
 
+  -
+    name: CAMERA_ARM_SHOULDER
+    parent: CHASSIS
+    translation: [ 0.175, 0, 0.35 ]
+    jointType: fixed
+    elements:
+      -
+        type: Shape
+        geometry:
+          type: Box
+          size: [ 0.05, 0.05, 0.1 ]
+  -
+    name: CAMERA_ARM_LINK_1
+    parent: CAMERA_ARM_SHOULDER
+    translation: [ 0, 0.05, 0.025 ]
+    jointType: revolute
+    jointId: 0
+    jointAxis: Y
+    jointRange: unlimited
+    centerOfMass: [ 0, 0.025, 0.0125 ]
+    mass: 0.5
+    elements:
+      -
+        type: Shape
+        translation: [ -0.125, 0, 0 ]
+        rotation: [ 0, 1, 0, 90]
+        geometry:
+          type: Box
+          size: [ 0.05, 0.05, 0.3 ]
+  -
+    name: CAMERA_ARM_LINK_2
+    parent: CAMERA_ARM_LINK_1
+    translation: [ -0.25, -0.05, 0 ]
+    jointType: revolute
+    jointId: 1
+    jointAxis: Y
+    jointRange: unlimited
+    centerOfMass: [ 0, 0, 0.15 ]
+    mass: 0.5
+    elements:
+      -
+        type: Shape
+        translation: [ 0, 0, 0.125 ]
+        geometry:
+          type: Box
+          size: [ 0.05, 0.05, 0.3 ]
+  -
+    name: ARM_CAMERA
+    parent: CAMERA_ARM_LINK_2
+    jointType: fixed
+    elements:
+      -
+        type: Shape
+        translation: [ 0.05, 0, 0.24 ]
+        geometry:
+          type: Box
+          size: [ 0.05, 0.08, 0.12 ]
+      -
+        type: Shape
+        translation: [ 0.085, 0, 0.24 ]
+        rotation: [ 0, 0, 1, 90 ]
+        geometry:
+          type: Cylinder
+          radius: 0.025
+          height: 0.02
+      -
+        type: Collision
+        elements:
+          -
+            type: Camera
+            name: ARM_CAMERA
+            id: 1
+            translation: [ 0.085, 0, 0.24 ]
+            rotation: [[ 0, 1, 0, -90 ], [ 0, 0, 1, -90]]
+            format: COLOR
+            on: true
+            width: 640
+            height: 360
+            fieldOfView: 60
+            frameRate: 10
+            farClipDistance: 100
