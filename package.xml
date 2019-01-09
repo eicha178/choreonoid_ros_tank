@@ -10,6 +10,7 @@
   <depend>choreonoid</depend>
   <depend>choreonoid_ros_plugin</depend>
   <depend>roscpp</depend>
+  <depend>rospy</depend>
   <depend>std_msgs</depend>
   <depend>sensor_msgs</depend>
   <depend>geometry_msgs</depend>
