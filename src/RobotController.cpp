@@ -11,10 +11,10 @@ class RobotController : public SimpleController
 {
     SimpleControllerIO* io;
     bool usePseudoContinousTrackMode;
-    Link::ActuationMode turretActuationMode;
+    Link::ActuationMode armActuationMode;
     Link* trackL;
     Link* trackR;
-    Link* turretJoint[2];
+    Link* armJoint[2];
     double qref[2];
     double qprev[2];
     double dt;
@@ -33,15 +33,16 @@ public:
         ostream& os = io->os();
         Body* body = io->body();
 
+        // Crawler
         usePseudoContinousTrackMode = true;
-        turretActuationMode = Link::ActuationMode::JOINT_TORQUE;
+        armActuationMode = Link::ActuationMode::JOINT_TORQUE;
         for(auto opt : io->options()){
             if(opt == "wheels"){
                 usePseudoContinousTrackMode = false;
             }
-            if(opt == "velocity"){
-                turretActuationMode = Link::ActuationMode::JOINT_VELOCITY;
-            }
+            //if(opt == "velocity"){
+            //    armActuationMode = Link::ActuationMode::JOINT_VELOCITY;
+            //}
         }
 
         if(usePseudoContinousTrackMode){
@@ -59,15 +60,32 @@ public:
         }
 
         if(usePseudoContinousTrackMode){
+            os << "set JOINT_SURFACE_VELOCITY" << endl;
             trackL->setActuationMode(Link::JOINT_SURFACE_VELOCITY);
             trackR->setActuationMode(Link::JOINT_SURFACE_VELOCITY);
         } else {
+            os << "JOINT_VELOCITY" << endl;
             trackL->setActuationMode(Link::JOINT_VELOCITY);
             trackR->setActuationMode(Link::JOINT_VELOCITY);
         }
         io->enableOutput(trackL);
         io->enableOutput(trackR);
         
+
+        // Camera Arm
+        armJoint[0] = body->link("CAMERA_ARM_LINK_1");
+        armJoint[1] = body->link("CAMERA_ARM_LINK_2");
+
+        for(int i=0; i<2; ++i) {
+            Link* joint = armJoint[i];
+            if(!joint) {
+                os << "Arm joint " << i << " is not found." << endl;
+            }
+            joint->setActuationMode(armActuationMode);
+            io->enableIO(joint);
+            qref[i] = qprev[i] = joint->q();
+        }
+
         dt = io->timeStep();
     }
 
@@ -97,6 +115,33 @@ public:
             trackL->dq_target() = k * (pos[1] - pos[0]/2);
             trackR->dq_target() = k * (pos[1] + pos[0]/2);
         }
+
+        // Arm
+        //static const double P = 200.0;
+        //static const double D = 50.0;
+
+        static const double P = 50.0;
+        static const double D = 10.0;
+
+        for(int i=0; i<2; ++i) {
+            Link* joint = armJoint[i];
+            //double dummyQ = 0.0;
+    
+            //if(armActuationMode == Link::JOINT_VELOCITY) {
+            //    joint->dq_target() = dummyQ;
+            //} else if(armActuationMode == Link::JOINT_TORQUE) {
+            if(armActuationMode == Link::JOINT_TORQUE) {
+                double q = joint->q();
+                double dq = (q - qprev[i]) / dt;
+                double dqref = 0.0;
+//                double deltaq = 0.002 * dummyQ;
+//                qref[i] += deltaq;
+//                dqref = deltaq / dt;
+                joint->u() = P * (qref[i] - q) + D * (dqref - dq);
+                qprev[i] = q;
+            }
+        }
+
     }
 
     void trackCallback(const geometry_msgs::Twist& msg)

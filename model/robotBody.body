@@ -86,9 +86,14 @@ links:
     jointType: revolute
     jointId: 0
     jointAxis: Y
-    jointRange: unlimited
+    #jointRange: unlimited
+    jointRange: [ -5, 180 ]
     centerOfMass: [ 0, 0.025, 0.0125 ]
     mass: 0.5
+    inertia: [
+      0.01, 0,    0,
+      0,    0.01, 0,
+      0,    0,    0.01 ]
     elements:
       -
         type: Shape
@@ -104,9 +109,14 @@ links:
     jointType: revolute
     jointId: 1
     jointAxis: Y
-    jointRange: unlimited
+    #jointRange: unlimited
+    jointRange: [ -180, 30 ]
     centerOfMass: [ 0, 0, 0.15 ]
     mass: 0.5
+    inertia: [
+      0.01, 0,    0,
+      0,    0.01, 0,
+      0,    0,    0.01 ]
     elements:
       -
         type: Shape
