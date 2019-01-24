@@ -27,15 +27,16 @@ items:
               1, -2.34285316e-10, -9.03054522e-08, 
               2.34005872e-10, 1, -3.09443695e-06, 
               9.03054529e-08, 3.09443695e-06, 1 ]
-            jointPositions: [  ]
+            jointPositions: [  0.000000,  0.000000 ]
             initialRootPosition: [ 1.85300149e-10, 7.46317296e-09, 0.095669986 ]
             initialRootAttitude: [ 
               1, -2.34285316e-10, -9.03054522e-08, 
               2.34005872e-10, 1, -3.09443695e-06, 
               9.03054529e-08, 3.09443695e-06, 1 ]
+            initialJointPositions: [  0.000000,  0.000000 ]
             zmp: [ 0, 0, 0 ]
             collisionDetection: true
-            selfCollisionDetection: false
+            selfCollisionDetection: true
             isEditable: true
           children: 
             - 
@@ -138,7 +139,7 @@ views:
     class: ItemTreeView
     mounted: true
     state: 
-      selected: [ 2, 4 ]
+      selected: [ 2 ]
       checked: [ 2, 5, 6 ]
       expanded: [ 1, 2, 3 ]
   - 
@@ -195,10 +196,12 @@ views:
           up: [ 0.999935092, -0.0043157481, -0.0105444589 ]
         - 
           camera: [ System, Orthographic ]
-          isCurrent: true
           orthoHeight: 10.9051
           near: 0.04
           far: 200
+        - 
+          camera: [ Robot, FRAME_FRONT_CAMERA ]
+          isCurrent: true
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -211,7 +214,7 @@ views:
     class: SceneView
     mounted: true
     state: 
-      editMode: false
+      editMode: true
       viewpointControlMode: thirdPerson
       collisionLines: false
       polygonMode: fill
@@ -246,26 +249,24 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
+          isCurrent: true
           fieldOfView: 0.698132
           near: 0.04
           far: 200
-          eye: [ 0.341730359, -1.38871387, 1.47094737 ]
-          direction: [ -0.0363740592, 0.763111202, -0.645242762 ]
-          up: [ -0.0307209247, 0.644511013, 0.763977603 ]
+          eye: [ 0.924325633, -1.28058258, 1.77007423 ]
+          direction: [ -0.422639576, 0.570467272, -0.704232121 ]
+          up: [ -0.419223979, 0.565856992, 0.709969802 ]
         - 
           camera: [ System, Orthographic ]
-          orthoHeight: 20
+          orthoHeight: 11.2776
           near: 0.04
           far: 200
-        - 
-          camera: [ Robot, FRAME_FRONT_CAMERA ]
-          isCurrent: true
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       yzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       dedicatedItemTreeViewChecks: true
-      checked: [ 2, 5, 6 ]
+      checked: [ 2, 5 ]
   - 
     id: 5
     name: "シーン 3"
@@ -308,18 +309,20 @@ views:
       cameras: 
         - 
           camera: [ System, Perspective ]
-          isCurrent: true
           fieldOfView: 0.698132
           near: 0.04
           far: 200
           eye: [ 4.21779272, -4.01157546, 7.13616453 ]
           direction: [ -0.40603906, 0.458821316, -0.79032606 ]
-          up: [ -0.523764214, 0.591849922, 0.612686476 ]
+          up: [ -0.523764214, 0.591849922, 0.612686477 ]
         - 
           camera: [ System, Orthographic ]
           orthoHeight: 20
           near: 0.04
           far: 200
+        - 
+          camera: [ Robot, ARM_CAMERA ]
+          isCurrent: true
       backgroundColor: [ 0.100000001, 0.100000001, 0.300000012 ]
       gridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
       xzgridColor: [ 0.899999976, 0.899999976, 0.899999976, 1 ]
@@ -383,10 +386,10 @@ toolbars:
     snapDistance: 0.025
     penetrationBlockDepth: 0.0005
     lazyCollisionDetectionMode: true
-  "BodyBar": 
-    current: 2
   "LeggedBodyBar": 
     stanceWidth: 0.15
+  "BodyBar": 
+    current: 2
   "BodyMotionGenerationBar": 
     autoGenerationForNewBody: true
     balancer: false
@@ -480,17 +483,17 @@ viewAreas:
         - 
           type: splitter
           orientation: vertical
-          sizes: [ 646, 0 ]
+          sizes: [ 523, 123 ]
           children: 
             - 
               type: splitter
               orientation: horizontal
-              sizes: [ 560, 559 ]
+              sizes: [ 513, 606 ]
               children: 
                 - 
                   type: splitter
                   orientation: vertical
-                  sizes: [ 320, 320 ]
+                  sizes: [ 259, 258 ]
                   children: 
                     - 
                       type: pane

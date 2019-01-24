@@ -2,6 +2,7 @@
 
 import rospy
 from geometry_msgs.msg import Twist
+from sensor_msgs.msg import JointState
 import sys, select, termios, tty
 
 MAX_LIN_VEL = 1.00
@@ -42,6 +43,9 @@ def getKey():
 def vels(target_linear_vel, target_angular_vel):
     return "currently:\tlinear vel %s\t angular vel %s " % (target_linear_vel,target_angular_vel)
 
+def torques(target_linear_vel, target_angular_vel):
+    return "currently:\tjoint0 %s\t joint1 %s " % (target_linear_vel,target_angular_vel)
+
 def makeSimpleProfile(output, input, slop):
     if input > output:
         output = min( input, output + slop )
@@ -75,11 +79,11 @@ def checkAngularLimitVelocity(vel):
 if __name__=="__main__":
     settings = termios.tcgetattr(sys.stdin)
 
-    rospy.init_node('key_to_msgs')
 
     pub = rospy.Publisher('cmd_vel', Twist, queue_size=10)
+    pub_arm = rospy.Publisher('cmd_arm', JointState, queue_size=10)
 
-#    turtlebot3_model = rospy.get_param("model", "burger")
+    rospy.init_node('key_to_msgs')
 
     status = 0
     target_linear_vel   = 0.0
@@ -87,10 +91,19 @@ if __name__=="__main__":
     control_linear_vel  = 0.0
     control_angular_vel = 0.0
 
+    joint_state = JointState()
+#    joint_state.header = Header()
+#    joint_state.header.stamp = rospy.Time.now()
+    joint_state.name = ['joint0', 'joint1']
+    joint_state.position = []
+    joint_state.velocity = []
+    joint_state.effort = [0.0, 0.0]
+
     try:
         print msg
         while(1):
             key = getKey()
+
             if key == 'w' :
                 target_linear_vel = checkLinearLimitVelocity(target_linear_vel + LIN_VEL_STEP_SIZE)
                 status = status + 1
@@ -107,6 +120,18 @@ if __name__=="__main__":
                 target_angular_vel = checkAngularLimitVelocity(target_angular_vel - ANG_VEL_STEP_SIZE)
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
+            elif key == 'r':
+                joint_state.effort[0] = joint_state.effort[0] + 0.1
+                print torques(joint_state.effort[0], joint_state.effort[1])
+            elif key == 'f':
+                joint_state.effort[0] = joint_state.effort[0] - 0.1
+                print torques(joint_state.effort[0], joint_state.effort[1])
+            elif key == 't':
+                joint_state.effort[1] = joint_state.effort[1] + 0.1
+                print torques(joint_state.effort[0], joint_state.effort[1])
+            elif key == 'g':
+                joint_state.effort[1] = joint_state.effort[1] - 0.1
+                print torques(joint_state.effort[0], joint_state.effort[1])
             #elif key == ' ' or key == 's' :
             elif key == ' ' :
                 target_linear_vel   = 0.0
@@ -114,6 +139,9 @@ if __name__=="__main__":
                 target_angular_vel  = 0.0
                 control_angular_vel = 0.0
                 print vels(target_linear_vel, target_angular_vel)
+
+                joint_state.effort[0] = 0.0
+                joint_state.effort[1] = 0.0
             else:
                 if (key == '\x03'):
                     break
@@ -131,6 +159,7 @@ if __name__=="__main__":
             twist.angular.x = 0.0; twist.angular.y = 0.0; twist.angular.z = control_angular_vel
 
             pub.publish(twist)
+            pub_arm.publish(joint_state)
 
     except:
         print e
