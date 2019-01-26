@@ -11,6 +11,26 @@ find_package(catkin REQUIRED COMPONENTS
   geometry_msgs
   choreonoid
   #choreonoid_ros_plugin
+  message_generation
+)
+
+add_message_files(
+  FILES
+  JointPosition.msg
+)
+
+add_service_files(
+  FILES
+  SetJointPosition.srv
+)
+
+generate_messages(
+  DEPENDENCIES
+)
+
+catkin_package(
+  INCLUDE_DIRS ${catkin_INCLUDE_DIRS}
+  CATKIN_DEPENDS sensor_msgs geometry_msgs roscpp
 )
 
 include_directories(
@@ -33,4 +53,6 @@ function(add_cnoid_simple_controller)
 endfunction()
 
 add_subdirectory(src)
+
+
 

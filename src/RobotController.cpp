@@ -3,12 +3,16 @@
 
 #include <cnoid/EigenUtil>
 
-#include "ros/node_handle.h"
+#include "ros/ros.h"
+//#include "ros/node_handle.h"
 #include "geometry_msgs/Twist.h"
 #include "sensor_msgs/JointState.h"
 
+#include "choreonoid_ros_tank/SetJointPosition.h"
+
 using namespace std;
 using namespace cnoid;
+
 
 class RobotController : public SimpleController
 {
@@ -29,16 +33,25 @@ class RobotController : public SimpleController
 
     ros::Subscriber armSubscriber;
     sensor_msgs::JointState msg_arm;
-    double effort[2]={0.0, 0.0};
 
-    Joystick joystick;
+    double effort[2]={0.0, 0.0};
+    double position[2]={0.0, 0.0};
+
+    ros::ServiceServer service;
+
+    //Joystick joystick;
+
+    Body* body;
+    SimpleControllerIO* _io;
 
 public:
     virtual bool initialize(SimpleControllerIO* io) override
     {
         this->io = io;
+        _io = io;
         ostream& os = io->os();
-        Body* body = io->body();
+        //Body* body = io->body();
+        body = io->body();
 
         // Crawler
         usePseudoContinousTrackMode = true;
@@ -100,8 +113,9 @@ public:
     virtual bool start() override
     {
         trackSubscriber = node.subscribe("cmd_vel", 1, &RobotController::trackCallback, this);
+        armSubscriber   = node.subscribe("cmd_arm", 1, &RobotController::armCallback, this);
 
-        armSubscriber = node.subscribe("cmd_arm", 1, &RobotController::armCallback, this);
+        service = node.advertiseService("set_joint_position", &RobotController::setJointPosition, this);
     }
 
     virtual bool control() override
@@ -127,7 +141,7 @@ public:
         }
 
         // Arm
-        static const double P = 50.0;
+        static const double P = 60.0;
         static const double D = 10.0;
 
         for(int i=0; i<2; ++i) {
@@ -138,25 +152,30 @@ public:
                 double dq = (q - qprev[i]) / dt;
                 double dqref = 0.0;
                 double deltaq = 0.002 * effort[i];
-                //double deltaq = 0.002 * msg_arm.effort[i];
+
                 qref[i] += deltaq;
                 dqref = deltaq / dt;
-                clampTargetJointAngle(joint, i);
+                clampTargetJointAngle(joint);
                 joint->u() = P * (qref[i] - q) + D * (dqref - dq);
                 qprev[i] = q;
 
-            } else if (armActuationMode == Link::JOINT_ANGLE) {
+            }
+            else if (armActuationMode == Link::JOINT_ANGLE) {
                 double q = joint->q();
-                double dq = (q - qprev[i]) / dt;
+                //double dq = (q - qprev[i]) / dt;
                 double dqref = 0.0;
-                double deltaq = effort[i] * 0.0174444 ;
+                double deltaq = 0.0;
 
-                qref[i] += deltaq;
-                dqref = deltaq / dt;
-                clampTargetJointAngle(joint, i);
-                joint->q_target() = qref[i];
-                qprev[i] = q;
-                //effort[i] = 0.0;
+                if(!fabs(position[i]-q) < 0.05){
+                    double deltaq = 0.001 ;
+                    if(position[i] < q){
+                        deltaq = deltaq * -1;
+                    }
+                    qref[i] += deltaq;
+                    clampTargetJointAngle(joint);
+                    joint->q_target() = qref[i];
+                    qprev[i] = q;
+                }
             }
         }
     }
@@ -171,22 +190,36 @@ public:
         msg_arm = msg;
         effort[0] = msg.effort[0];
         effort[1] = msg.effort[1];
+        
+        position[0] = msg.position[0];
+        position[1] = msg.position[1];
     }
 
-    //void clampTargetJointAngle(int jointID)
-    void clampTargetJointAngle(Link* joint, int jointNum)
+    void clampTargetJointAngle(Link* joint)
     {
+        int jointId = joint->jointId();
         static const double maxerror = radian(3.0);
         double q_current = joint->q();
         double q_lower = std::max(q_current - maxerror, joint->q_lower());
         double q_upper = std::min(q_current + maxerror, joint->q_upper());
-        if(qref[jointNum] < q_lower){
-            qref[jointNum] = q_lower;
-        } else if(qref[jointNum] > q_upper){
-            qref[jointNum] = q_upper;
+
+        if(qref[jointId] < q_lower){
+            qref[jointId] = q_lower;
+        } else if(qref[jointId] > q_upper){
+            qref[jointId] = q_upper;
         }
     }
 
+    // service
+    bool setJointPosition(choreonoid_ros_tank::SetJointPosition::Request  &req,
+                          choreonoid_ros_tank::SetJointPosition::Response &res)
+    {
+        int _jId = req.joint_id;
+
+        position[_jId] = req.joint_position;
+        
+        return true;
+    }
 };
 
 CNOID_IMPLEMENT_SIMPLE_CONTROLLER_FACTORY(RobotController)

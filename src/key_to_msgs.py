@@ -95,7 +95,7 @@ if __name__=="__main__":
 #    joint_state.header = Header()
 #    joint_state.header.stamp = rospy.Time.now()
     joint_state.name = ['joint0', 'joint1']
-    joint_state.position = []
+    joint_state.position = [0.0, 0.0]
     joint_state.velocity = []
     joint_state.effort = [0.0, 0.0]
 
@@ -120,18 +120,24 @@ if __name__=="__main__":
                 target_angular_vel = checkAngularLimitVelocity(target_angular_vel - ANG_VEL_STEP_SIZE)
                 status = status + 1
                 print vels(target_linear_vel,target_angular_vel)
+
             elif key == 'r':
                 joint_state.effort[0] = joint_state.effort[0] + 0.1
+                joint_state.position[0] = joint_state.position[0] + 0.1
                 print torques(joint_state.effort[0], joint_state.effort[1])
             elif key == 'f':
                 joint_state.effort[0] = joint_state.effort[0] - 0.1
+                joint_state.position[0] = joint_state.position[0] - 0.1
                 print torques(joint_state.effort[0], joint_state.effort[1])
             elif key == 't':
                 joint_state.effort[1] = joint_state.effort[1] + 0.1
+                joint_state.position[1] = joint_state.position[1] + 0.1
                 print torques(joint_state.effort[0], joint_state.effort[1])
             elif key == 'g':
                 joint_state.effort[1] = joint_state.effort[1] - 0.1
+                joint_state.position[1] = joint_state.position[1] - 0.1
                 print torques(joint_state.effort[0], joint_state.effort[1])
+
             #elif key == ' ' or key == 's' :
             elif key == ' ' :
                 target_linear_vel   = 0.0
@@ -142,6 +148,8 @@ if __name__=="__main__":
 
                 joint_state.effort[0] = 0.0
                 joint_state.effort[1] = 0.0
+                joint_state.position[0] = 0.0
+                joint_state.position[1] = 0.0
             else:
                 if (key == '\x03'):
                     break

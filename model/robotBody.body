@@ -10,11 +10,11 @@ links:
     translation: [ 0, 0, 0 ]
     jointType: free
     centerOfMass: [ 0, 0, 0 ]
-    mass: 8.0
+    mass: 10.0
     inertia: [
       0.1, 0,   0,
       0,   0.1, 0,
-      0,   0,   0.5 ]
+      0,   0,   0.2 ]
     elements:
       -
         type: Visual
@@ -87,9 +87,9 @@ links:
     jointId: 0
     jointAxis: Y
     #jointRange: unlimited
-    jointRange: [ -5, 180 ]
+    jointRange: [ 0, 180 ]
     centerOfMass: [ 0, 0.025, 0.0125 ]
-    mass: 0.5
+    mass: 1.0
     inertia: [
       0.01, 0,    0,
       0,    0.01, 0,
@@ -110,13 +110,13 @@ links:
     jointId: 1
     jointAxis: Y
     #jointRange: unlimited
-    jointRange: [ -180, 30 ]
+    jointRange: [ -180, 45 ]
     centerOfMass: [ 0, 0, 0.15 ]
-    mass: 0.5
+    mass: 1.0
     inertia: [
       0.01, 0,    0,
       0,    0.01, 0,
-      0,    0,    0.01 ]
+      0,    0,    0.05 ]
     elements:
       -
         type: Shape
